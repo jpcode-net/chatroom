@@ -33,7 +33,7 @@ public:
 
 public:
     void showMessage(ChatItemView *itemView, QListWidgetItem *item);
-    void showTimeLabel(QString curMsgTime);
+    void showTimeLabel(uint curTime);
 
 protected:
     void resizeEvent(QResizeEvent *event);

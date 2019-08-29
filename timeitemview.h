@@ -24,7 +24,7 @@ signals:
 public slots:
 
 public:
-    void setTime(const QString& time);
+    void setTime(uint time);
 
 protected:
     void paintEvent(QPaintEvent *event);

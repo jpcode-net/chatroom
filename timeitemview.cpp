@@ -16,11 +16,11 @@ TimeItemView::TimeItemView(QWidget *parent) : ChatItemView(parent)
 
 }
 
-void TimeItemView::setTime(const QString& time)
+void TimeItemView::setTime(uint time)
 {
     ChatItemView::setTime(time);
 
-    m_curTime = QDateTime::fromTime_t(time.toInt()).toString("hh:mm");
+    m_curTime = QDateTime::fromTime_t(time).toString("hh:mm");
 
     this->update();
 }

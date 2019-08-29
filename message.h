@@ -21,7 +21,7 @@ public:
     QString type;
     QString toUsers;
     QString content;
-    QString time;
+    uint time;
 
 public:
     static Message fromJson(const QJsonObject& jsonObj)
@@ -32,7 +32,7 @@ public:
         msg.type = jsonObj.value("type").toString();
         msg.toUsers = jsonObj.value("toUsers").toString();
         msg.content = jsonObj.value("content").toString();
-        msg.time = jsonObj.value("time").toString();
+        msg.time = (uint)jsonObj.value("time").toInt();
 
         return msg;
     }

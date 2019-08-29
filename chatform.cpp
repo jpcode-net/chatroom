@@ -55,14 +55,12 @@ ChatForm::ChatForm(QWidget *parent) :
     resize(800, 600);
 
     //test
-    QString time = QString::number(QDateTime::currentDateTime().toTime_t()); //时间戳
-
     Message msg;
     msg.content = "other people.";
     msg.type = "chat";
     msg.fromId = 100001;
     msg.fromName = "user1";
-    msg.time = time;
+    msg.time = QDateTime::currentDateTime().toTime_t();
 
     MessageItemView* itemView = new OtherMessageItemView(msgListWidget->parentWidget());
     itemView->setMessage(msg);
@@ -94,8 +92,6 @@ void ChatForm::onReceive(const QString& message)
 
     Message msg = Message::fromJson(jsonObj);
 
-    QString time = msg.time; //时间戳
-
     QDomDocument doc;
     doc.setContent(message, false);
 
@@ -124,7 +120,7 @@ void ChatForm::onReceive(const QString& message)
 
     msg.content = doc.toString();
 
-    showTimeLabel(time);
+    showTimeLabel(msg.time);
 
     MessageItemView* itemView = new SelfMessageItemView(msgListWidget->parentWidget());
     itemView->setMessage(msg);
@@ -136,7 +132,7 @@ void ChatForm::onReceive(const QString& message)
 
 void ChatForm::onSend(const QString& content)
 {
-    QString time = QString::number(QDateTime::currentDateTime().toTime_t()); //时间戳
+    uint time = QDateTime::currentDateTime().toTime_t(); //时间戳
     qDebug()<<"addMessage" << content << time;
 
     QDomDocument doc;
@@ -189,22 +185,19 @@ void ChatForm::onSend(const QString& content)
 void ChatForm::showMessage(ChatItemView *itemView, QListWidgetItem *item)
 {
     itemView->setFixedWidth(vertSplitter->width() - 10);
+    itemView->updateLayout();
     QSize size(vertSplitter->width() - 10, itemView->height());
     item->setSizeHint(size);
     msgListWidget->setItemWidget(item, itemView);
-    itemView->updateLayout();
 }
 
-void ChatForm::showTimeLabel(QString curMsgTime)
+void ChatForm::showTimeLabel(uint curTime)
 {
     bool isShowTime = false;
     if(msgListWidget->count() > 0) {
         QListWidgetItem* lastItem = msgListWidget->item(msgListWidget->count() - 1);
         ChatItemView* itemView = (ChatItemView*)msgListWidget->itemWidget(lastItem);
-        int lastTime = itemView->time().toInt();
-        int curTime = curMsgTime.toInt();
-        qDebug() << "curTime lastTime:" << curTime - lastTime;
-        isShowTime = ((curTime - lastTime) > 60); // 两个消息相差一分钟
+        isShowTime = ((curTime - itemView->time()) > 60); // 两个消息相差一分钟
     } else {
         isShowTime = true;
     }
@@ -215,7 +208,7 @@ void ChatForm::showTimeLabel(QString curMsgTime)
         QSize size = QSize(vertSplitter->width() - 10, 40);
         timeView->resize(size);
         listItem->setSizeHint(size);
-        timeView->setTime(curMsgTime);
+        timeView->setTime(curTime);
         msgListWidget->setItemWidget(listItem, timeView);
     }
 }

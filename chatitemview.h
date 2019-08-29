@@ -27,12 +27,12 @@ public:
     ChatItemView(QWidget *parent=nullptr) : QWidget(parent) { }
 
 public:
-    virtual void setTime(const QString& time) { m_time = time; }
-    const QString& time() { return m_time; }
+    virtual void setTime(uint time) { m_time = time; }
+    uint time() const { return m_time; }
     virtual void updateLayout() = 0;
 
 private:
-    QString m_time;
+    uint m_time;
 };
 
 #endif // CHATITEMVIEW_H
