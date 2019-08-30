@@ -36,7 +36,7 @@ private slots:
 
 private:
     Ui::ChatInputView *ui;
-    ChatTextEdit *textEdit;
+    ChatTextEdit *m_textEdit;
 };
 
 #endif // CHATINPUTFORM_H

@@ -24,11 +24,16 @@ public:
 
     QByteArray post(const QString& url, const QByteArray& postData);
 
+public:
+    inline int statusCode() const { return m_statusCode; }
+    inline int errorCode() const { return m_errorCode; }
+    const QString& errorMsg() const { return m_errorMsg; }
+
     /* member */
 public:
-    int statusCode;
-    int errorCode;
-    QString errorMessage;
+    int m_statusCode;
+    int m_errorCode;
+    QString m_errorMsg;
 };
 
 #endif // HTTPREQUEST_H

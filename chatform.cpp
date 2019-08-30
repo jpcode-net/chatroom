@@ -30,43 +30,43 @@ ChatForm::ChatForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    horSplitter = new QSplitter(Qt::Horizontal, this);
+    m_horSplitter = new QSplitter(Qt::Horizontal, this);
 
-    vertSplitter = new QSplitter(Qt::Vertical, horSplitter);
+    m_vertSplitter = new QSplitter(Qt::Vertical, m_horSplitter);
 
-    msgListWidget = new QListWidget(vertSplitter);
-    msgListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-    inputView = new ChatInputView(vertSplitter);
+    m_msgListWidget = new QListWidget(m_vertSplitter);
+    m_msgListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    m_inputView = new ChatInputView(m_vertSplitter);
 
-    vertSplitter->setStretchFactor(0, 4);
-    vertSplitter->setStretchFactor(1, 1);
+    m_vertSplitter->setStretchFactor(0, 4);
+    m_vertSplitter->setStretchFactor(1, 1);
 
-    userListWidget = new QListWidget(horSplitter);
-    userListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-    horSplitter->setStretchFactor(0, 3);
-    horSplitter->setStretchFactor(1, 1);
+    m_userListWidget = new QListWidget(m_horSplitter);
+    m_userListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    m_horSplitter->setStretchFactor(0, 3);
+    m_horSplitter->setStretchFactor(1, 1);
 
     ui->gridLayout->setMargin(3);
-    ui->gridLayout->addWidget(horSplitter);
+    ui->gridLayout->addWidget(m_horSplitter);
 
-    connect(horSplitter, &QSplitter::splitterMoved, this, &ChatForm::horSplitterMoved);
-    connect(inputView, &ChatInputView::onSend, this, &ChatForm::onSend);
+    connect(m_horSplitter, &QSplitter::splitterMoved, this, &ChatForm::horSplitterMoved);
+    connect(m_inputView, &ChatInputView::onSend, this, &ChatForm::onSend);
 
     resize(800, 600);
 
     //test
     Message msg;
-    msg.content = "other people.";
-    msg.type = "chat";
-    msg.fromId = 100001;
-    msg.fromName = "user1";
-    msg.time = QDateTime::currentDateTime().toTime_t();
+    msg.setContent( "other people." );
+    msg.setType( "chat" );
+    msg.setFromId( 100001 );
+    msg.setFromName( "user1" );
+    msg.setTime( QDateTime::currentDateTime().toTime_t() );
 
-    MessageItemView* itemView = new OtherMessageItemView(msgListWidget->parentWidget());
+    MessageItemView* itemView = new OtherMessageItemView(m_msgListWidget->parentWidget());
     itemView->setMessage(msg);
-    QListWidgetItem* item = new QListWidgetItem(msgListWidget);
+    QListWidgetItem* item = new QListWidgetItem(m_msgListWidget);
     showMessage(itemView, item);
-    msgListWidget->setCurrentRow(msgListWidget->count()-1);
+    m_msgListWidget->setCurrentRow(m_msgListWidget->count()-1);
 
 }
 
@@ -118,16 +118,16 @@ void ChatForm::onReceive(const QString& message)
         }
     }
 
-    msg.content = doc.toString();
+    msg.setContent( doc.toString() );
 
-    showTimeLabel(msg.time);
+    showTimeLabel(msg.time());
 
-    MessageItemView* itemView = new SelfMessageItemView(msgListWidget->parentWidget());
+    MessageItemView* itemView = new SelfMessageItemView(m_msgListWidget->parentWidget());
     itemView->setMessage(msg);
-    QListWidgetItem* item = new QListWidgetItem(msgListWidget);
+    QListWidgetItem* item = new QListWidgetItem(m_msgListWidget);
     showMessage(itemView, item);
 
-    msgListWidget->setCurrentRow(msgListWidget->count()-1);
+    m_msgListWidget->setCurrentRow(m_msgListWidget->count()-1);
 }
 
 void ChatForm::onSend(const QString& content)
@@ -165,51 +165,51 @@ void ChatForm::onSend(const QString& content)
     QString newContent = doc.toString();
 
     Message msg;
-    msg.fromId = 10002;
-    msg.fromName = "user2";
-    msg.content = newContent;
-    msg.time = time;
+    msg.setFromId( 10002 );
+    msg.setFromName( "user2" );
+    msg.setContent( newContent );
+    msg.setTime( time );
 
     // send .
 
     showTimeLabel(time);
 
-    MessageItemView* itemView = new SelfMessageItemView(msgListWidget->parentWidget());
+    MessageItemView* itemView = new SelfMessageItemView(m_msgListWidget->parentWidget());
     itemView->setMessage(msg);
-    QListWidgetItem* item = new QListWidgetItem(msgListWidget);
+    QListWidgetItem* item = new QListWidgetItem(m_msgListWidget);
     showMessage(itemView, item);
 
-    msgListWidget->setCurrentRow(msgListWidget->count()-1);
+    m_msgListWidget->setCurrentRow(m_msgListWidget->count()-1);
 }
 
 void ChatForm::showMessage(ChatItemView *itemView, QListWidgetItem *item)
 {
-    itemView->setFixedWidth(vertSplitter->width() - 10);
+    itemView->setFixedWidth(m_vertSplitter->width() - 10);
     itemView->updateLayout();
-    QSize size(vertSplitter->width() - 10, itemView->height());
+    QSize size(m_vertSplitter->width() - 10, itemView->height());
     item->setSizeHint(size);
-    msgListWidget->setItemWidget(item, itemView);
+    m_msgListWidget->setItemWidget(item, itemView);
 }
 
 void ChatForm::showTimeLabel(uint curTime)
 {
     bool isShowTime = false;
-    if(msgListWidget->count() > 0) {
-        QListWidgetItem* lastItem = msgListWidget->item(msgListWidget->count() - 1);
-        ChatItemView* itemView = (ChatItemView*)msgListWidget->itemWidget(lastItem);
+    if(m_msgListWidget->count() > 0) {
+        QListWidgetItem* lastItem = m_msgListWidget->item(m_msgListWidget->count() - 1);
+        ChatItemView* itemView = (ChatItemView*)m_msgListWidget->itemWidget(lastItem);
         isShowTime = ((curTime - itemView->time()) > 60); // 两个消息相差一分钟
     } else {
         isShowTime = true;
     }
     if(isShowTime) {
-        TimeItemView* timeView = new TimeItemView(msgListWidget->parentWidget());
-        QListWidgetItem* listItem = new QListWidgetItem(msgListWidget);
+        TimeItemView* timeView = new TimeItemView(m_msgListWidget->parentWidget());
+        QListWidgetItem* listItem = new QListWidgetItem(m_msgListWidget);
 
-        QSize size = QSize(vertSplitter->width() - 10, 40);
+        QSize size = QSize(m_vertSplitter->width() - 10, 40);
         timeView->resize(size);
         listItem->setSizeHint(size);
         timeView->setTime(curTime);
-        msgListWidget->setItemWidget(listItem, timeView);
+        m_msgListWidget->setItemWidget(listItem, timeView);
     }
 }
 
@@ -229,9 +229,9 @@ void ChatForm::horSplitterMoved(int pos, int index)
 
 void ChatForm::adjustLayout()
 {
-    for(int i = 0; i < msgListWidget->count(); i++) {
-        ChatItemView* itemView = (ChatItemView*)msgListWidget->itemWidget(msgListWidget->item(i));
-        QListWidgetItem* item = msgListWidget->item(i);
+    for(int i = 0; i < m_msgListWidget->count(); i++) {
+        ChatItemView* itemView = (ChatItemView*)m_msgListWidget->itemWidget(m_msgListWidget->item(i));
+        QListWidgetItem* item = m_msgListWidget->item(i);
 
         showMessage(itemView, item);
     }
@@ -246,7 +246,7 @@ QString ChatForm::downImage(const QString& imageUrl)
 
     HttpRequest request;
     QByteArray data = request.get(imageUrl);
-    if (request.errorCode == 0 && request.statusCode == 200) {
+    if (request.errorCode() == 0 && request.statusCode() == 200) {
        int n = imageUrl.lastIndexOf("/");
        QString filename = dataPath + imageUrl.right(imageUrl.length() - n);
        QFile file(filename);

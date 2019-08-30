@@ -26,13 +26,13 @@ QByteArray HttpRequest::get(const QString& url)
     connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
     eventLoop.exec();
 
-    errorCode = reply->error();
-    statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    m_errorCode = reply->error();
+    m_statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
-    if (errorCode == QNetworkReply::NoError) {
+    if (m_errorCode == QNetworkReply::NoError) {
         return reply->readAll();
     } else {
-        errorMessage = qPrintable(reply->errorString());
+        m_errorMsg = qPrintable(reply->errorString());
         return nullptr;
     }
 }
@@ -52,13 +52,13 @@ QByteArray HttpRequest::post(const QString& url, const QByteArray& data)
     connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
     eventLoop.exec();
 
-    errorCode = reply->error();
-    statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    m_errorCode = reply->error();
+    m_statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
-    if (errorCode == QNetworkReply::NoError) {
+    if (m_errorCode == QNetworkReply::NoError) {
         return reply->readAll();
     } else {
-        errorMessage = qPrintable(reply->errorString());
+        m_errorMsg = qPrintable(reply->errorString());
         return nullptr;
     }
 }

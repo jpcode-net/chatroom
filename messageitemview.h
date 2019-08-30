@@ -29,7 +29,7 @@ public:
     inline void setMessage(const Message& message)
     {
         m_msg = message;
-        setTime(m_msg.time);
+        setTime(m_msg.time());
     }
     inline Message& message() { return m_msg; }
 

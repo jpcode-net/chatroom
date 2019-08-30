@@ -39,7 +39,7 @@ void SelfMessageItemView::updateLayout()
 
     int maxHeight = 60;  // avatar height;
 
-    ui->textEdit->setHtml( message().content );
+    ui->textEdit->setHtml( message().content() );
 
     QTextDocument *doc = ui->textEdit->document();
     doc->adjustSize();

@@ -51,14 +51,14 @@ private slots:
 private:
     Ui::ChatForm *ui;
 
-    QSplitter* vertSplitter;
-    QSplitter* horSplitter;
+    QSplitter* m_vertSplitter;
+    QSplitter* m_horSplitter;
 
-    QListWidget* msgListWidget;
-    QListWidget* userListWidget;
-    ChatInputView* inputView;
+    QListWidget* m_msgListWidget;
+    QListWidget* m_userListWidget;
+    ChatInputView* m_inputView;
 
-    QList<Message> messageList;
+    QList<Message> m_messageList;
 };
 
 #endif // CLASSROOMFORM_H

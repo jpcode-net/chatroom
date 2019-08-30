@@ -20,8 +20,8 @@ ChatInputView::ChatInputView(QWidget *parent) :
     ui->setupUi(this);
 
     QGridLayout *layout = new QGridLayout(ui->widget);
-    textEdit = new ChatTextEdit(ui->widget);
-    layout->addWidget(textEdit);
+    m_textEdit = new ChatTextEdit(ui->widget);
+    layout->addWidget(m_textEdit);
     layout->setMargin(0);
 
 }
@@ -45,13 +45,13 @@ void ChatInputView::resizeEvent(QResizeEvent *event)
 
 void ChatInputView::on_sendButton_clicked()
 {
-    QString content = textEdit->toPlainText();
+    QString content = m_textEdit->toPlainText();
     if (content == "") {
         QMessageBox::warning(this, "提示", "请输入内容。");
         return ;
     }
 
-    emit onSend(textEdit->toHtml());
+    emit onSend(m_textEdit->toHtml());
 
-    textEdit->setText("");
+    m_textEdit->setText("");
 }
